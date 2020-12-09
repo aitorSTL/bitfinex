@@ -331,7 +331,8 @@ class WssClient(BitfinexSocketManager):
         return self._start_socket(id_, payload, callback)
 
     # Precision: R0, P0, P1, P2, P3
-    def subscribe_to_orderbook(self, symbol, precision, callback):
+    # Length: 1,25,100
+    def subscribe_to_orderbook(self, symbol, precision, length, callback):
         """Subscribe to the orderbook of a given symbol.
 
         Parameters
@@ -341,7 +342,10 @@ class WssClient(BitfinexSocketManager):
 
         precision : str
             Accepted values as strings {R0, P0, P1, P2, P3}
-
+            
+        length : int
+            Initial snapshot length. Accepted values {1,25,100}
+            
         callback : func
             A function to use to handle incomming messages
 
@@ -360,6 +364,7 @@ class WssClient(BitfinexSocketManager):
             my_client.subscribe_to_orderbook(
                 symbol="BTCUSD",
                 precision="P1",
+                length=25,
                 callback=my_handler
             )
             my_client.start()
@@ -370,6 +375,7 @@ class WssClient(BitfinexSocketManager):
             'event': 'subscribe',
             "channel": "book",
             "prec": precision,
+            "len": length,
             'symbol': symbol,
         }
         payload = json.dumps(data, ensure_ascii=False).encode('utf8')
